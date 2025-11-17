@@ -1,0 +1,16 @@
+Text,URL,Likes,Comments,Shares,Time
+# --- TÍCH CỰC ---
+"Hôm nay hoàn thành xong dự án sau gần hai tháng miệt mài. Cảm giác thật nhẹ nhõm khi mọi công sức cuối cùng cũng được đền đáp. Cả nhóm đã cùng nhau vượt qua bao lần lỗi code, mất dữ liệu, rồi cùng thức đêm chỉnh sửa. Khoảnh khắc nộp bài xong và nghe giảng viên khen thật sự khiến mình xúc động.",https://example.com/posts/401,240,150,4,2024-11-03T18:00:00.000Z
+"Buổi học sáng nay cực kỳ thú vị. Thầy không chỉ giảng lý thuyết mà còn kể thêm rất nhiều câu chuyện thực tế trong nghề, giúp tụi mình hiểu sâu hơn. Lâu rồi mới thấy cả lớp tập trung và hào hứng đến vậy.",https://example.com/posts/402,165,93,2,2024-09-27T09:30:00.000Z
+"Chiều nay ra sân trường ngồi một mình, gió thổi nhẹ, nắng vừa đủ ấm. Mọi thứ thật yên bình sau những ngày căng thẳng. Đôi khi chỉ cần vài phút như vậy thôi là đủ để lấy lại năng lượng và tiếp tục cố gắng.",https://example.com/posts/403,210,88,1,2024-10-10T17:20:00.000Z
+
+# --- TIÊU CỰC ---
+"Hôm nay là một ngày không suôn sẻ chút nào. Mình bị trễ xe buýt, đến lớp muộn, mà bài tập lại chưa hoàn thành. Giảng viên thì điểm danh đúng lúc mình vừa bước vào. Cảm giác vừa xấu hổ vừa bực mình, đúng kiểu ngày nào xui là xui đủ thứ.",https://example.com/posts/501,80,45,0,2024-09-10T07:20:00.000Z
+"Thật sự rất mệt mỏi khi làm việc nhóm với những người không có trách nhiệm. Giao việc mãi không chịu làm, đến khi nộp bài thì đùn đẩy cho người khác. Cuối cùng cả nhóm bị trừ điểm oan, trong khi những người không làm vẫn thản nhiên như không có gì xảy ra.",https://example.com/posts/502,95,60,0,2024-10-05T15:00:00.000Z
+"Hôm nay hệ thống học trực tuyến bị lỗi liên tục, đăng nhập mấy lần đều bị văng ra. Thời gian làm bài thi chỉ có 30 phút mà mất gần một nửa chỉ để vào lại hệ thống. Mình cảm thấy rất bực và thất vọng vì lỗi kỹ thuật này lặp lại nhiều lần rồi.",https://example.com/posts/503,78,42,0,2024-06-22T09:50:00.000Z
+
+# --- TRUNG LẬP ---
+"Sáng mai có buổi kiểm tra ngắn về môn Cơ sở dữ liệu, mọi người nhớ mang laptop và sạc nhé. Bài kiểm tra chỉ trong 45 phút thôi, nhưng cần chuẩn bị kỹ vì có phần thực hành SQL.",https://example.com/posts/601,25,8,0,2024-09-16T19:00:00.000Z
+"Nhà trường thông báo: từ tuần sau, khu vực gửi xe phía sau giảng đường B sẽ tạm đóng để sửa chữa. Sinh viên vui lòng gửi xe ở khu A hoặc nhà xe chính để tránh ùn tắc.",https://example.com/posts/602,30,9,0,2024-08-22T10:15:00.000Z
+"Lịch họp câu lạc bộ cuối tuần này sẽ được chuyển sang chiều Chủ nhật để tiện cho mọi người tham gia. Địa điểm và thời gian cụ thể sẽ được cập nhật trong nhóm sau.",https://example.com/posts/603,22,8,0,2024-08-24T09:00:00.000Z
+"Thư viện thông báo mở thêm khung giờ buổi tối cho sinh viên năm cuối, từ 19h đến 22h, bắt đầu áp dụng từ tuần tới. Đây là thời gian thích hợp để mọi người ôn thi và làm luận văn.",https://example.com/posts/604,27,10,0,2024-10-19T08:20:00.000Z

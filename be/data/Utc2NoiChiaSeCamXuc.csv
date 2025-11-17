@@ -1,0 +1,16 @@
+Text,URL,Likes,Comments,Shares,Time
+# --- TÍCH CỰC ---
+"Hôm nay là một ngày đáng nhớ! Nhóm mình vừa hoàn thành buổi thuyết trình cuối kỳ, và thật bất ngờ khi được giảng viên khen là bài chuẩn bị tốt nhất lớp. Cả nhóm đã cùng nhau chuẩn bị suốt cả tuần, từ slide đến demo, nên khi nghe được lời khen, ai cũng vỡ òa trong niềm vui. Đúng là nỗ lực không bao giờ phản bội.",https://example.com/posts/701,310,160,6,2024-11-05T10:00:00.000Z
+"Chiều nay tham gia buổi talkshow về hướng nghiệp do khoa tổ chức, thật sự rất bổ ích. Diễn giả chia sẻ nhiều câu chuyện thực tế giúp mình hiểu rõ hơn con đường nghề nghiệp sau khi ra trường. Cảm ơn ban tổ chức vì một buổi nói chuyện thật ý nghĩa!",https://example.com/posts/702,200,100,2,2024-09-22T15:30:00.000Z
+"Buổi picnic của lớp hôm nay quá tuyệt vời! Mọi người cùng nhau nấu ăn, chơi trò chơi và chụp ảnh lưu niệm. Lâu rồi mới có dịp cả lớp tụ tập đông đủ như vậy, cảm giác thân thiết và vui vẻ vô cùng.",https://example.com/posts/703,280,135,7,2024-10-18T09:40:00.000Z
+
+# --- TIÊU CỰC ---
+"Thật sự quá mệt với việc đăng ký học phần. Hệ thống cứ bị lỗi liên tục, đăng nhập mãi không được. Đến khi vào được thì lớp học đã đầy. Năm nào cũng hứa nâng cấp mà chẳng thấy cải thiện gì cả.",https://example.com/posts/801,85,52,0,2024-09-11T07:10:00.000Z
+"Hôm nay ra căn-tin ăn trưa mà đồ ăn nguội ngắt, phục vụ thì cau có. Mình góp ý nhẹ mà còn bị nói lại. Thật sự mong trường chú ý hơn đến chất lượng dịch vụ cho sinh viên.",https://example.com/posts/802,90,40,1,2024-06-27T12:00:00.000Z
+"Trời mưa tầm tã mà vẫn phải đi học, áo mưa rách, xe chết máy giữa đường. Đến lớp người ướt hết, ngồi học lạnh run. Một ngày đúng nghĩa là 'thử thách của sinh viên'.",https://example.com/posts/803,72,39,0,2024-08-02T17:25:00.000Z
+
+# --- TRUNG LẬP ---
+"Thông báo: Buổi hội thảo khoa học của khoa sẽ diễn ra vào thứ Sáu tuần này tại hội trường lớn. Sinh viên năm 3 và năm 4 bắt buộc tham dự, nhớ mang theo thẻ sinh viên để điểm danh.",https://example.com/posts/901,28,9,0,2024-10-20T10:00:00.000Z
+"Tuần tới, trường sẽ tiến hành bảo trì hệ thống mạng nội bộ trong 2 ngày (thứ Ba và thứ Tư). Trong thời gian này, website và cổng thông tin sinh viên có thể bị gián đoạn.",https://example.com/posts/902,25,8,0,2024-09-12T13:15:00.000Z
+"Lịch thi cuối kỳ đã được cập nhật trên cổng thông tin. Mọi người nhớ kiểm tra kỹ phòng thi và thời gian để tránh nhầm lẫn.",https://example.com/posts/903,31,10,0,2024-11-01T08:50:00.000Z
+"Phòng Đào tạo thông báo: Sinh viên cần hoàn tất khảo sát môn học trước ngày 15/11. Việc chưa hoàn thành khảo sát có thể ảnh hưởng đến việc xem điểm.",https://example.com/posts/904,22,7,0,2024-10-25T09:00:00.000Z
