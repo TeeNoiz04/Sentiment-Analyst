@@ -7,7 +7,9 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 
 const initialPages = [
   "UTC2 Confessions",
-  "UTC2 Zone"
+  "UTC2 Zone",
+  "UTC2 Chia Sẻ Cảm Xúc",
+  "Diễn Đàn Nghe SV nói"
 ];
 
 // Changed from hashtags to topics based on the backend model
@@ -40,7 +42,7 @@ export default function FilterConfession() {
   const [startDate, setStartDate] = useState(undefined);
   const [endDate, setEndDate] = useState(undefined);
   const [error, setError] = useState("");
-  
+
   // New state to control which view is active
   const [activeView, setActiveView] = useState("sentiment"); // "sentiment" or "posts"
 
@@ -65,7 +67,6 @@ export default function FilterConfession() {
       return segs[segs.length - 1] || null;
     }
   };
-
   // Function to truncate text to 50 characters
   const truncateText = (text, maxLength = 50) => {
     if (!text) return '';
@@ -78,11 +79,12 @@ export default function FilterConfession() {
     setIsLoadingData(true);
     setError("");
     try {
+      console.log("Fetching data with parameters: " + selectedPage );
       await new Promise((resolve) => setTimeout(resolve, 3000));
       const response = await axios.get(`${API_URL}/posts`, {
         params: {
           page: 1,
-          limit: 10,
+          limit: 50,
           selected_page: selectedPage,
           topic: selectedTopic, // Changed from tag to topic
           start_date: startDate,
@@ -115,6 +117,7 @@ export default function FilterConfession() {
     setIsLoadingSentiment(true);
     setError("");
     try {
+      console.log("Sending data for sentiment analysis:", data);
       const response = await axios.post(`${API_URL}/sentiment`, data);
       if (response.data && typeof response.data === 'object') {
         setSentimentContent(response.data);
@@ -151,54 +154,51 @@ export default function FilterConfession() {
   return (
     <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 py-6 px-8">
+
+      <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 py-6 px-8 rounded-xl shadow-md">
         <h1 className="text-3xl font-bold text-white">NLP & ML</h1>
-        <p className="text-blue-100 mt-2">
-         NGHIÊN CỨU THUẬT TOÁN NLP VÀ ỨNG DỤNG VÀO BÀI TOÁN TÓM TẮT VĂN BẢN VÀ PHÂN TÍCH THÁI ĐỘ TÍCH CỰC, TIÊU CỰC CỦA SINH VIÊN UTC2 TRÊN MẠNG XÃ HỘI FACEBOOK
+        <p className="text-pink-100 mt-2">
+          NGHIÊN CỨU THUẬT TOÁN NLP VÀ ỨNG DỤNG VÀO BÀI TOÁN TÓM TẮT VĂN BẢN...
         </p>
       </div>
 
       {isLoadingData && (
-        <div className="flex items-center p-4 bg-blue-50 text-blue-700 rounded-lg border border-blue-200">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 mr-2"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zM9 9a1 1 0 012 0v5a1 1 0 11-2 0V9zm1-4a1 1 0 100 2 1 1 0 000-2z"
-              clipRule="evenodd"
-            />
-          </svg>
-          Đang tải dữ liệu...
+        <div className="flex items-center gap-3 p-4 bg-white border border-blue-200 rounded-xl shadow-sm">
+          <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-blue-700 font-medium">Đang tải dữ liệu...</span>
         </div>
       )}
 
       {/* Summarize school situation */}
       <div className="p-4 space-y-3 max-h-96 overflow-y-auto rounded-b-lg bg-white shadow-inner">
         {!isLoadingData && (
-          <div className="p-4">
-            <div className="flex items-center space-x-2">
-              <h2 className="text-xl font-bold text-dark">
+          <div className="p-4 bg-gradient-to-r from-pink-50 via-purple-50 to-indigo-50 rounded-xl shadow-md border border-gray-200">
+            <div className="flex items-center space-x-3">
+              <div className="w-3 h-8 bg-gradient-to-b from-pink-400 via-purple-500 to-indigo-500 rounded-lg"></div>
+              <h2 className="text-2xl font-extrabold text-gray-800">
                 Tình hình trường UTC2
               </h2>
             </div>
+            <p className="mt-2 text-gray-600">
+              Tổng quan các bài viết, cảm xúc và chủ đề gần đây từ sinh viên UTC2
+            </p>
           </div>
         )}
 
         {isLoadingOverView && <Loading />}
 
+
         {overViewContent && !isLoadingOverView && (
-          <div className="bg-blue-50 p-6 rounded-lg border border-blue-100 shadow-sm hover:shadow-md transition-shadow duration-200">
+          <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-200">
             <div className="flex items-start space-x-4">
-              <p className="text-gray-800 leading-relaxed">{overViewContent}</p>
+              <p className="text-gray-800 text-base leading-relaxed">
+                {overViewContent}
+              </p>
             </div>
             <div className="mt-4 flex items-center text-sm text-gray-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-1"
+                className="h-4 w-4 mr-1 text-gray-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -214,6 +214,7 @@ export default function FilterConfession() {
             </div>
           </div>
         )}
+
       </div>
 
       {/* Filter Section - All in one row */}
@@ -245,8 +246,6 @@ export default function FilterConfession() {
 
               {pageDropdownOpen && (
                 <div className="absolute z-30 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg">
-                  
-
                   <div className="max-h-48 overflow-y-auto divide-y divide-gray-100">
                     {pagesList
                       .filter((p) =>
@@ -348,15 +347,17 @@ export default function FilterConfession() {
             </select>
           </div>
 
+
           <div>
             <button
-              className="px-6 cursor-pointer py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 transition-colors"
+              className="px-6 py-2 text-white rounded-lg bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-1 transition shadow-md"
               onClick={handleSearch}
               disabled={isLoadingData}
             >
-              {isLoadingData ? "Đang tải..." : "  Tìm kiếm"}
+              {isLoadingData ? "Đang tải..." : "Tìm kiếm"}
             </button>
           </div>
+
         </div>
 
         {error && (
@@ -370,45 +371,150 @@ export default function FilterConfession() {
       <div className="flex border-b border-gray-200">
         <button
           onClick={() => setActiveView("sentiment")}
-          className={`flex-1 py-3 text-center font-medium text-sm ${
-            activeView === "sentiment"
-              ? "text-blue-600 border-b-2 border-blue-600"
+          className={`flex-1 py-3 text-center font-medium text-sm relative transition-colors duration-300 ${activeView === "sentiment"
+              ? "text-pink-600"
               : "text-gray-500 hover:text-gray-700"
-          }`}
+            }`}
         >
           Phân tích cảm xúc
+          {activeView === "sentiment" && (
+            <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-purple-600 rounded-t"></span>
+          )}
         </button>
+
         <button
           onClick={() => setActiveView("posts")}
-          className={`flex-1 py-3 text-center font-medium text-sm ${
-            activeView === "posts"
-              ? "text-blue-600 border-b-2 border-blue-600"
+          className={`flex-1 py-3 text-center font-medium text-sm relative transition-colors duration-300 ${activeView === "posts"
+              ? "text-pink-600"
               : "text-gray-500 hover:text-gray-700"
-          }`}
+            }`}
         >
           Danh sách bài viết
+          {activeView === "posts" && (
+            <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-purple-600 rounded-t"></span>
+          )}
         </button>
       </div>
 
       {/* Conditional View Content */}
       {activeView === "sentiment" ? (
         <>
-          {/* Results Section - 3 columns with divider lines */}
+          {sentimentContent && !isLoadingSentiment && (() => {
+            const total =
+              sentimentContent.positive.length +
+              sentimentContent.negative.length +
+              sentimentContent.neutral.length;
+
+            const numPositive = sentimentContent.positive.length;
+            const numNegative = sentimentContent.negative.length;
+            const numNeutral = sentimentContent.neutral.length;
+
+            const percentPositive = total
+              ? ((numPositive / total) * 100).toFixed(1)
+              : 0;
+            const percentNegative = total
+              ? ((numNegative / total) * 100).toFixed(1)
+              : 0;
+            const percentNeutral = total
+              ? ((numNeutral / total) * 100).toFixed(1)
+              : 0;
+
+            const Circle = ({ percent, color, size = 60, strokeWidth = 8 }) => { // Thêm props size và strokeWidth
+              const radius = size / 2;
+              const normalizedRadius = radius - strokeWidth / 2;
+              const circumference = normalizedRadius * 2 * Math.PI;
+              const strokeDashoffset = circumference - (percent / 100) * circumference;
+
+              return (
+                <svg height={size} width={size}> {/* Sử dụng size cho chiều cao và chiều rộng */}
+                  <circle
+                    stroke="#e5e7eb"
+                    fill="transparent"
+                    strokeWidth={strokeWidth} // Sử dụng strokeWidth
+                    r={normalizedRadius}
+                    cx={radius}
+                    cy={radius}
+                  />
+                  <circle
+                    stroke={color}
+                    fill="transparent"
+                    strokeWidth={strokeWidth} // Sử dụng strokeWidth
+                    strokeDasharray={circumference + " " + circumference}
+                    style={{ strokeDashoffset, transition: "stroke-dashoffset 0.5s" }}
+                    r={normalizedRadius}
+                    cx={radius}
+                    cy={radius}
+                    strokeLinecap="round"
+                  />
+                  <text
+                    x="50%"
+                    y="50%"
+                    dominantBaseline="middle"
+                    textAnchor="middle"
+                    className="text-base font-semibold" // Tăng kích thước chữ trong vòng tròn
+                  >
+                    {percent}%
+                  </text>
+                </svg>
+              );
+            };
+
+            const SentimentCard = ({ title, percent, count, color }) => (
+              <div className="bg-white rounded-xl shadow-md p-6 flex items-center hover:shadow-lg transition"> {/* Loại bỏ flex-col ở đây */}
+                <div className="flex-shrink-0">
+                  <Circle percent={percent} color={color} size={80} strokeWidth={8} /> {/* Truyền size và strokeWidth lớn hơn */}
+                </div>
+                <div className="ml-6"> {/* Tăng khoảng cách từ hình tròn */}
+                  <p className="text-base text-gray-700 font-medium mb-1">{title}</p> {/* Tăng kích thước và độ đậm của tiêu đề */}
+                  <p className="text-3xl font-bold text-gray-800">{count}</p> {/* Giữ nguyên kích thước số lượng */}
+                </div>
+              </div>
+            );
+
+            return (
+              <div className="grid grid-cols-3 gap-4 p-6">
+                {/* Tích cực */}
+                <SentimentCard
+                  title="Tích cực"
+                  percent={percentPositive}
+                  count={numPositive}
+                  color="#22c55e"
+                />
+
+                {/* Tiêu cực */}
+                <SentimentCard
+                  title="Tiêu cực"
+                  percent={percentNegative}
+                  count={numNegative}
+                  color="#ef4444"
+                />
+
+                {/* Trung lập */}
+                <SentimentCard
+                  title="Trung lập"
+                  percent={percentNeutral}
+                  count={numNeutral}
+                  color="#6b7280"
+                />
+              </div>
+            );
+          })()}
+          {/* Detailed Sentiment Lists */}
           <div className="p-6">
-            <div className="grid grid-cols-3 divide-x divide-gray-200">
-              <div className="px-4">
-                <div className="bg-green-500 text-white p-3 rounded-t-lg">
+            <div className="grid grid-cols-3 gap-4">
+              {/* Tích cực */}
+              <div className="flex flex-col rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div className="bg-gradient-to-r from-green-400 to-green-600 text-white p-3 text-center">
                   <h2 className="text-lg font-bold">Tích cực</h2>
                 </div>
-
-                {isLoadingSentiment && <Loading />}
-
-                {sentimentContent && !isLoadingSentiment && Array.isArray(sentimentContent.positive) && (
-                  <div className="p-4 space-y-3 max-h-96 overflow-y-auto rounded-b-lg">
+                {isLoadingSentiment ? (
+                  <Loading />
+                ) : (
+                  <div className="p-4 space-y-3 max-h-96 overflow-y-auto bg-gradient-to-b from-green-50 to-green-100">
                     {sentimentContent.positive.map((text, index) => (
                       <div
                         key={index}
-                        className="bg-green-50 p-3 rounded-lg border border-green-100"
+                        className="bg-white p-3 rounded-lg border border-green-200 shadow-sm hover:shadow-md transition-shadow duration-200"
                       >
                         {truncateText(text)}
                       </div>
@@ -417,19 +523,19 @@ export default function FilterConfession() {
                 )}
               </div>
 
-              <div className="px-4">
-                <div className="bg-red-500 text-white p-3 rounded-t-lg">
+              {/* Tiêu cực */}
+              <div className="flex flex-col rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div className="bg-gradient-to-r from-red-400 to-red-600 text-white p-3 text-center">
                   <h2 className="text-lg font-bold">Tiêu cực</h2>
                 </div>
-
-                {isLoadingSentiment && <Loading />}
-
-                {sentimentContent && !isLoadingSentiment && Array.isArray(sentimentContent.negative) && (
-                  <div className="p-4 space-y-3 max-h-96 overflow-y-auto rounded-b-lg">
+                {isLoadingSentiment ? (
+                  <Loading />
+                ) : (
+                  <div className="p-4 space-y-3 max-h-96 overflow-y-auto bg-gradient-to-b from-red-50 to-red-100">
                     {sentimentContent.negative.map((text, index) => (
                       <div
                         key={index}
-                        className="bg-red-50 p-3 rounded-lg border border-red-100"
+                        className="bg-white p-3 rounded-lg border border-red-200 shadow-sm hover:shadow-md transition-shadow duration-200"
                       >
                         {truncateText(text)}
                       </div>
@@ -438,19 +544,19 @@ export default function FilterConfession() {
                 )}
               </div>
 
-              <div className="px-4">
-                <div className="bg-gray-500 text-white p-3 rounded-t-lg">
+              {/* Trung lập */}
+              <div className="flex flex-col rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div className="bg-gradient-to-r from-gray-400 to-gray-600 text-white p-3 text-center">
                   <h2 className="text-lg font-bold">Trung lập</h2>
                 </div>
-
-                {isLoadingSentiment && <Loading />}
-
-                {sentimentContent && !isLoadingSentiment && Array.isArray(sentimentContent.neutral) && (
-                  <div className="p-4 space-y-3 max-h-96 overflow-y-auto rounded-b-lg">
+                {isLoadingSentiment ? (
+                  <Loading />
+                ) : (
+                  <div className="p-4 space-y-3 max-h-96 overflow-y-auto bg-gradient-to-b from-gray-50 to-gray-100">
                     {sentimentContent.neutral.map((text, index) => (
                       <div
                         key={index}
-                        className="bg-gray-50 p-3 rounded-lg border border-gray-100"
+                        className="bg-white p-3 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200"
                       >
                         {truncateText(text)}
                       </div>
@@ -458,17 +564,20 @@ export default function FilterConfession() {
                   </div>
                 )}
               </div>
+
             </div>
           </div>
 
           {/* Create a section for the visualization and statistical */}
           <div className="min-h-screen bg-gray-50 p-4">
-            <h1 className="text-2xl font-bold mb-4 text-center">
+
+            <h1 className="text-3xl font-extrabold mb-4 text-center bg-clip-text text-transparent 
+                          bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 
+                          drop-shadow-lg">
               Thống kê cảm xúc
             </h1>
-
             {sentimentContent && !isLoadingSentiment && (
-              <EmotionStats data={sentimentContent} />
+              <EmotionStats data={sentimentContent} selected_page={selectedPage} selectedTopic={selectedTopic} startDate={startDate} endDate={endDate} />
             )}
           </div>
         </>
