@@ -1,0 +1,7 @@
+venv
+fine_tuned_model
+topic_model
+__pycache__
+.env
+venv310
+summary_model_final
