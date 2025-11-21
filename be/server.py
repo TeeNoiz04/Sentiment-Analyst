@@ -257,6 +257,69 @@ async def get_posts(page: Optional[int] = 1,
             status_code=500,
             detail=f"Internal server error: {str(e)}"
         )
+@app.post("/sentiment-v2")
+def sentiment_post(request: Optional[List[PostRequest]] = None):
+    try:
+        if not request:
+            request = get_data(PAGES_CONST[random.randint(0, len(PAGES_CONST) - 1)])
+
+        # Load the sentiment analysis model
+        model_path = "fine_tuned_model"  # Path to your fine-tuned model
+        sentiment_classifier, tokenizer = load_sentiment_model(model_path)
+
+        # Load stopwords if needed
+        stopwords_path = "data/vietnamese-stopwords.txt"  # Path to stopwords file
+        stopwords = load_stopwords(stopwords_path)
+
+        # Initialize result arrays
+        positive_sentences = []
+        negative_sentences = []
+        neutral_sentences = []
+
+        for post in request:
+            # Preprocess the text with special character and number removal
+            processed_text = preprocess_text(
+                post.text,
+                remove_emoji=True,
+                lowercase=True,
+                remove_stopwords=True,
+                stopwords=stopwords,
+                remove_special=True  # Enable special character and number removal
+            )
+
+            # Run the processed text through the sentiment model
+            try:
+                result = sentiment_classifier(
+                    processed_text, truncation=True, max_length=100)
+                label = result[0]["label"]
+                sentiment = {"LABEL_0": "negative",
+                             "LABEL_1": "neutral", 
+                             "LABEL_2": "positive"}[label]
+
+                # Add the sentence to the corresponding array
+                if sentiment == "positive":
+                    # Original text for display
+                    positive_sentences.append(post.text)
+                elif sentiment == "negative":
+                    # Original text for display
+                    negative_sentences.append(post.text)
+                else:
+                    # Original text for display
+                    neutral_sentences.append(post.text)
+            except Exception as e:
+                print(f"⚠️ Error analyzing sentence '{processed_text}': {e}")
+                continue
+
+        # Return the results
+        return {
+            "positive": positive_sentences,
+            "negative": negative_sentences,
+            "neutral": neutral_sentences
+        }
+
+    except Exception as e:
+        return {"error": str(e)}
+
 
 
 @app.post("/sentiment")

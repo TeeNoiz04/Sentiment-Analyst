@@ -3,3 +3,4 @@ fine_tuned_model
 topic_model
 __pycache__
 .env
+summary_model_final

@@ -36,7 +36,7 @@ export default function PostList({ posts, isLoading }) {
       });
 
       // Get overall sentiment
-      const sentimentResponse = await axios.post(`${API_URL}/sentiment`, [{
+      const sentimentResponse = await axios.post(`${API_URL}/sentiment-v2`, [{
         text: post.text,
         time: post.time,
         likes: post.likes,
