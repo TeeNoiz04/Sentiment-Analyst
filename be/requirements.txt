@@ -10,3 +10,4 @@ python-multipart==0.0.6
 pydantic==2.5.2
 python-dateutil==2.8.2
 accelerate==1.11.0
+underthesea==8.3.0
