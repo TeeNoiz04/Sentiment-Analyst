@@ -1,6 +1,6 @@
-# NLP_ML
+# Sentment-Analyst
 
-README tiếng Việt cho project NLP_ML
+Hệ thống phân tích cảm xúc người học
 
 ## Mục đích
 
