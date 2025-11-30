@@ -1,6 +1,5 @@
-# NLP_ML
-
-README tiếng Việt cho project NLP_ML
+# Senriment-Analyst
+Hệ thống phân tích cảm xúc của sinh viên
 
 ## Mục đích
 
