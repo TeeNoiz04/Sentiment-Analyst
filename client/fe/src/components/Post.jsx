@@ -1,52 +1,40 @@
-import React from "react";
-import { FaRegThumbsUp, FaRegCommentDots, FaShare } from "react-icons/fa";
-const Post = ({ post }) => (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 mb-6">
-        {/* Header */}
-        <div className="flex items-center mb-4">
-            <img
-                src={post.avatar}
-                alt={post.userName}
-                className="w-12 h-12 rounded-full object-cover mr-3"
-            />
-            <div>
-                <h3 className="font-semibold text-gray-900 dark:text-white">
-                    {post.userName}
-                </h3>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {post.time}
-                </span>
+import React, { use, useEffect, useState } from "react";
+import { FaHeart, FaComment } from "react-icons/fa";
+import useUser from "../hooks/useUser";
+export default function Post({ post }) {
+    const { user, loading } = useUser(post.UserID);
+ 
+
+    return (
+        <div className="bg-white ">
+            {/* Header */}
+            <div className="flex items-start mb-5">
+                <img
+                    src={user?.AvatarURL || "/img/avatar.jpg"}
+                    alt={user?.Username}
+                    className="w-12 h-12 rounded-full object-cover mr-4 border-2 border-blue-500/50 dark:border-blue-400/50 flex-shrink-0"
+                />
+                <div className="flex flex-col">
+                    <h3 className="font-bold text-lg text-gray-900 dark:text-white leading-snug hover:text-blue-600 transition-colors cursor-pointer">
+                        {user?.Username || "Người dùng"}
+                    </h3>
+                    <span className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                        {post.CreatedOn}
+                    </span>
+                </div>
             </div>
+
+            {/* Title */}
+            <h2 className="text-gray-900 dark:text-white font-extrabold text-2xl mb-3 leading-snug">
+                {post.Title}
+            </h2>
+
+            {/* Content */}
+            <p className="text-gray-700 dark:text-gray-300 text-base mb-4 leading-relaxed whitespace-pre-line">
+                {post.Content}
+            </p>
+
         </div>
 
-        {/* Content */}
-        <p className="text-gray-800 dark:text-gray-200 mb-3">{post.content}</p>
-
-        {/* Image */}
-        {post.image && (
-            <img
-                src={post.image}
-                alt="Post"
-                className="w-full rounded-xl object-cover mb-3 max-h-96"
-            />
-        )}
-
-        {/* Actions */}
-        <div className="flex justify-between text-gray-600 dark:text-gray-300 border-t border-gray-200 dark:border-gray-700 mt-3 pt-2">
-            <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-                <FaRegThumbsUp className="text-lg" />
-                <span className="font-medium">Like</span>
-            </button>
-            <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-                <FaRegCommentDots className="text-lg" />
-                <span className="font-medium">Comment</span>
-            </button>
-            <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-                <FaShare className="text-lg" />
-                <span className="font-medium">Share</span>
-            </button>
-        </div>
-    </div>
-);
-
-export default Post;
+    );
+};

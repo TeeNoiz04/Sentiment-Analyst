@@ -138,3 +138,25 @@ async def get_post_vote_summary(post_id: int, db: Session = Depends(get_db)):
         "total_votes": up_votes + down_votes,
         "net_votes": up_votes - down_votes
     }
+
+
+@router.get("/post/{post_id}/check-upvote", response_model=dict)
+async def check_user_upvote(
+    post_id: int,
+    user_id: int = Query(..., description="User ID to check"),
+    db: Session = Depends(get_db)
+):
+    """Check if user has upvoted a post"""
+    post = db.query(Post).filter(Post.PostID == post_id).first()
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    
+    upvote = db.query(Vote).filter(
+        Vote.PostID == post_id,
+        Vote.UserID == user_id,
+        Vote.VoteType == "up"
+    ).first()
+    
+    return {
+        "upvoted": upvote is not None
+    }

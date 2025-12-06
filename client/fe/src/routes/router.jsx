@@ -4,6 +4,9 @@ import Home from "../pages/Home";
 import Dashboard from "../pages/Dashboard";
 import NotFound from "../pages/NotFound";
 import Login from "../pages/Login";
+import About from "../pages/About";
+import Profile from "../pages/Profile";
+import CreatePostPage from "../pages/CreatePostPage";
 // Kiểm tra login
 const ProtectedRoute = ({ children }) => {
   const userName = sessionStorage.getItem("userName");
@@ -23,6 +26,9 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "dashboard", element: <Dashboard /> },
+      { path: "post", element: <CreatePostPage /> },
+      { path: "about", element: <About /> },
+      { path: "profile", element: <Profile /> }
     ],
   },
   { path: "*", element: <NotFound /> },

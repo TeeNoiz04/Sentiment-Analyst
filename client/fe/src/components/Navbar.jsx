@@ -9,16 +9,18 @@ export default function Navbar() {
   const menuRef = useRef();
 
   const menuItems = [
-    { name: "Home", path: "/" },
-    { name: "Dashboard", path: "/dashboard" },
-    { name: "About", path: "/about" }, // ví dụ thêm
+    { name: "Trang chủ", path: "/" },
+    { name: "Tạo bài viết", path: "/post" },
+    { name: "Về chúng tôi", path: "/about" }, // ví dụ thêm
   ];
 
   const handleLogout = () => {
     sessionStorage.removeItem("userName");
     navigate("/login", { replace: true });
   };
-
+  const handleProfile = () => {
+    navigate("/profile", { replace: true });
+  };
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -30,7 +32,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-white dark:bg-gray-900 shadow-md py-3 px-6">
+    <nav className="sticky top-0 z-50 left-0 w-full bg-white dark:bg-gray-900 shadow-md py-3 px-6">
       <div className="container mx-auto flex items-center justify-between">
         {/* Menu chính ở giữa */}
         <div className="flex-1 flex justify-center gap-6 font-medium text-gray-700 dark:text-gray-200">
@@ -63,7 +65,7 @@ export default function Navbar() {
             <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-50">
               <button
                 className="w-full text-left px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-                onClick={() => alert("Trang Hồ sơ")}
+                onClick={handleProfile}
               >
                 Hồ sơ
               </button>
@@ -80,5 +82,6 @@ export default function Navbar() {
 
       </div>
     </nav>
+    
   );
 }
