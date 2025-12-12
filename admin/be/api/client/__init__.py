@@ -7,13 +7,14 @@ from fastapi import APIRouter
 try:
     from api.client.endpoints import (
         health, posts, users, reports, votes, comments,
-        roles, permissions, code_types, codes
+        roles, permissions, code_types, codes, auth
     )
     
     client_api_router = APIRouter()
     
     # Include routers with client prefix
     client_api_router.include_router(health.router, prefix="/health", tags=["client-health"])
+    client_api_router.include_router(auth.router, prefix="/auth", tags=["client-auth"])
     client_api_router.include_router(posts.router, prefix="/posts", tags=["client-posts"])
     client_api_router.include_router(users.router, prefix="/users", tags=["client-users"])
     client_api_router.include_router(reports.router, prefix="/reports", tags=["client-reports"])

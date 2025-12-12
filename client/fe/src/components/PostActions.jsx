@@ -3,10 +3,9 @@
 import { FaRegThumbsUp, FaRegCommentDots, FaRegFlag, FaThumbsUp } from "react-icons/fa";
 import PostStats from "./PostStats";
 import usePostStats from "../hooks/usePostStats";
-import { useState } from "react";
 
 export default function PostActions({postId, user_id, onComment, onReport }) {
-    const { handleLike, likes, comments, liked } = usePostStats(postId, user_id);
+    const { handleLike, likeCount, commentCount, liked } = usePostStats(postId, user_id);
      
     const handleClick = () => {
         handleLike();
@@ -16,8 +15,8 @@ export default function PostActions({postId, user_id, onComment, onReport }) {
     {/* Hàng 1: PostStats (Thống kê bài viết) */}
     <div className="px-2 pb-3">
         <PostStats
-            likes={likes}
-            comments={comments}
+            likes={likeCount}
+            comments={commentCount}
         />
     </div>
 

@@ -17,7 +17,6 @@ router = APIRouter()
 async def create_post(post: PostCreate, db: Session = Depends(get_db)):
     """Create a new post"""
     try:
-        print("Creating post:", post)
         db_post = Post(
             UserID=post.UserID,
             Title=post.Title,
@@ -41,7 +40,6 @@ async def get_posts(
     skip: int = Query(0, ge=0, description="Number of posts to skip"),
     limit: int = Query(10, ge=1, le=100, description="Number of posts to return"),
     status: Optional[str] = Query(None, description="Filter by status: approved, hidden"),
-    user_id: Optional[int] = Query(None, description="Filter by user ID"),
     category: Optional[str] = Query(None, description="Filter by category"),
     start_date: Optional[str] = Query(None, description="Filter by start date"),
     end_date: Optional[str] = Query(None, description="Filter by end date"),
@@ -49,12 +47,9 @@ async def get_posts(
 ):
     """Get list of posts with pagination"""
     query = db.query(Post)
-    
     # Apply filters
     if status:
         query = query.filter(Post.Status == status)
-    if user_id:
-        query = query.filter(Post.UserID == user_id)
     if category:
         query = query.filter(Post.Category == category)
     if start_date:

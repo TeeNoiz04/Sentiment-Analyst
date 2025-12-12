@@ -71,7 +71,8 @@ async def get_users(
     db: Session = Depends(get_db)
 ):
     """Get list of users with pagination"""
-    query = db.query(User)
+    print(f"Fetching users with skip={skip}, limit={limit}, status={status}")
+    query = db.query(User).filter(User.Status != "deleted")
     if status:
         query = query.filter(User.Status == status)
     
@@ -122,3 +123,35 @@ async def update_user(user_id: int, user_update: UserUpdate, db: Session = Depen
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Error updating user: {str(e)}")
+
+
+@router.delete("/{user_id}", status_code=200)
+async def delete_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.UserID == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    try:
+        user.Status = "deleted"
+        db.commit()
+        return {"message": "User deleted successfully", "userId": user_id}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error deleting user: {str(e)}")
+
+    
+@router.put("/{user_id}/status", response_model=dict)
+async def update_user_status(user_id: int, status: str = Query(..., description="New status for the user"), db: Session = Depends(get_db)):
+    """Update user status"""
+    user = db.query(User).filter(User.UserID == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    try:
+        user.Status = status
+        db.commit()
+        db.refresh(user)
+        return {"message": "User status updated successfully", "userId": user_id, "newStatus": status}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error updating user status: {str(e)}")

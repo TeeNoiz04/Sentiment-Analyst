@@ -1,49 +1,43 @@
-import { Link } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import { Calendar, Tag, Search, AlertCircle, Home, PenSquare, Users, User, LogOut, Menu, X, Sparkles } from "lucide-react";
 
-export default function Footer() {
-    return (
-        <footer className="py-6 px-16 border-t border-gray-200 font-light flex flex-col lg:flex-row justify-between items-center">
-            <p className="text-gray-700 mb-6 lg:mb-0">
-                Copyright &copy; {new Date().getFullYear()}{' '}
-                <a
-                    href="https://www.creative-tim.com?ref=mtdk"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-light-blue-500 hover:text-light-blue-700"
-                >
-                    Creative Hội Bàn Tròn
-                </a>
+function Footer() {
+  const footerLinks = [
+    { name: "Tạo bài viết", path: "/post" },
+    { name: "Về chúng tôi", path: "/about" },
+    { name: "Hồ sơ", path: "/profile" },
+  ];
+
+  return (
+    <footer className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 border-t border-gray-200 dark:border-gray-700">
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
+          {/* Copyright */}
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-purple-500" />
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Copyright © {new Date().getFullYear()}{" "}
+              <span className="font-semibold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+                Creative Hội Bàn Tròn
+              </span>
             </p>
+          </div>
 
-            <ul className="list-unstyled flex">
-
-                <li className="mr-6">
-                    <Link
-                        to="/blog"
-                        className="text-gray-700 hover:text-gray-900 font-medium block text-sm"
-                    >
-                        Tạo bài viết
-                    </Link>
-                </li>
-                <li className="mr-6">
-                    <Link
-                        to="/about-us"
-                        className="text-gray-700 hover:text-gray-900 font-medium block text-sm"
-                    >
-                        Về chúng tôi
-                    </Link>
-                </li>
-                <li className="mr-6">
-                    <Link
-                        to="/license"
-                        className="text-gray-700 hover:text-gray-900 font-medium block text-sm"
-                    >
-                        Hồ sơ
-                    </Link>
-                </li>
-
-            </ul>
-
-        </footer>
-    );
+          {/* Links */}
+          <div className="flex gap-6">
+            {footerLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.path}
+                className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              >
+                {link.name}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
 }
+export default Footer;

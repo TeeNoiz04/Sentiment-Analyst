@@ -8,20 +8,11 @@ export const getPosts = async () => {
 };
 
 export const fetchPosts = async (filters) => {
-  const params = {};
-  if (filters.skip) params.skip = filters.skip;
-  if (filters.limit) params.limit = filters.limit;
-  if (filters.Status) params.Status = filters.Status;
-  if (filters.user_id) params.user_id = filters.user_id;
-  if (filters.topic) params.topic = filters.topic;
-  if (filters.startDate) params.startDate = filters.startDate;
-  if (filters.endDate) params.endDate = filters.endDate;
 
-  try {
-    const res = await api.get("/posts", { params });
+  try {  
+    const res = await api.get("/posts", { params: filters });
     return res.data;
   } catch (err) {
-    console.error("Fetch posts error:", err);
     throw err;
   }
 };
@@ -29,7 +20,6 @@ export const fetchPosts = async (filters) => {
 
 export const createPost = async (postData) => {
   const response = await api.post("/posts", postData);
-  console.log("Created post:", response.data);
   return response.data;
 };
 
@@ -57,8 +47,3 @@ export const checkLiked = async (postId, user_id) => {
   });
   return response.data.upvoted;
 }
-// Lấy số lượng comment (nếu cần tách riêng)
-// export const getCommentsCount = async (postId) => {
-//   const response = await api.get(`/posts/${postId}/comments/count`);
-//   return response.data;
-// };

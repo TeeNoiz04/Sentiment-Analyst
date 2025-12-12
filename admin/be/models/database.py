@@ -34,6 +34,13 @@ class ReportStatus(str, enum.Enum):
     CLOSED = "closed"
 
 
+class SessionStatus(str, enum.Enum):
+    """Session status enum"""
+    ACTIVE = "active"
+    EXPIRED = "expired"
+    REVOKED = "revoked"
+
+
 # ========== Users Table ==========
 class User(Base):
     """User model - includes anonymous users, students, and admins"""
@@ -58,9 +65,34 @@ class User(Base):
     reports = relationship("Report", back_populates="user", cascade="all, delete-orphan")
     comments = relationship("Comment", back_populates="user", cascade="all, delete-orphan")
     user_roles = relationship("UserRole", back_populates="user", cascade="all, delete-orphan")
+    sessions = relationship("UserSession", back_populates="user", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<User(UserID={self.UserID}, Username={self.Username}, DeviceID={self.DeviceID})>"
+
+
+# ========== UserSession Table ==========
+class UserSession(Base):
+    """User session model for JWT token management"""
+    __tablename__ = "user_sessions"
+
+    SessionID = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    UserID = Column(Integer, ForeignKey("users.UserID"), nullable=False)
+    AccessToken = Column(Text, nullable=False)
+    RefreshToken = Column(Text, nullable=False)
+    DeviceInfo = Column(String(255), nullable=True)
+    IpAddress = Column(String(50), nullable=True)
+    UserAgent = Column(String(500), nullable=True)
+    CreatedAt = Column(DateTime(timezone=True), server_default=func.now())
+    ExpiresAt = Column(DateTime(timezone=True), nullable=False)
+    LastAccessedAt = Column(DateTime(timezone=True), nullable=True)
+    Status = Column(String(20), default=SessionStatus.ACTIVE.value, nullable=False)
+
+    # Relationships
+    user = relationship("User", back_populates="sessions")
+
+    def __repr__(self):
+        return f"<UserSession(SessionID={self.SessionID}, UserID={self.UserID}, Status={self.Status})>"
 
 
 # ========== Roles Table ==========

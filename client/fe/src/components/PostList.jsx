@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import Post from "../components/Post";
 import PostActions from "./PostActions";
 import ModalComment from "../components/ModalComment";  // nhớ import
 import ModalReport from "../components/ReportModal";  // import modal report
 const PostList = ({ posts, user }) => {
   const [activePostComment, setActivePostComment] = useState(null);  // Post đang mở modal bình luận
-  const [activePostReport, setActivePostReport] = useState(null); // Post đang mở modal báo cáo
+  const [activePostReport, setActivePostReport] = useState(null);
+  const handleCloseModal = () => {
+    setActivePostComment(null);
+    setActivePostReport(null);
+  
+  };
   return (
     <div className="w-3/4 mx-auto p-4 space-y-6">
-      {posts.map((post) => (
+      {user && posts.map((post) => (
         <div key={post.PostID} className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
           {/* Hiển thị bài viết */}
           <Post post={post} />
@@ -17,7 +22,7 @@ const PostList = ({ posts, user }) => {
           <PostActions
             postId={post.PostID}
             user_id={user.UserID}
-            onComment={() => setActivePostComment(post)}        
+            onComment={() => setActivePostComment(post)}
             onReport={() => setActivePostReport(post)}
           />
 
@@ -27,7 +32,9 @@ const PostList = ({ posts, user }) => {
               post={activePostComment}
               user={user}
               isOpen={true}
-              onClose={() => setActivePostComment(null)}
+              onClose={() => {
+                handleCloseModal();
+              }}
             />
           )}
           {activePostReport?.PostID === post.PostID && (
@@ -35,7 +42,7 @@ const PostList = ({ posts, user }) => {
               post={activePostReport}
               user={user}
               isOpen={true}
-              onClose={() => setActivePostReport(null)}
+              onClose={() => handleCloseModal()}
             />
           )}
         </div>

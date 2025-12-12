@@ -1,19 +1,20 @@
 import useComments from "../hooks/useComments";
 import { useState } from "react";
 
+
 export default function ModalComment({ isOpen, onClose, post, user }) {
   if (!isOpen) return null;
 
-  const { comments, loading, addComment, loadMore, loadingMore, total } = useComments(post.PostID, user.UserID);
+  const {comments, loading, addComment, loadMore, loadingMore, total } = useComments(post.PostID, user.UserID);
   const [text, setText] = useState("");
 
   const handleSubmit = () => {  
     if (!text.trim()) return;
     addComment(post.PostID, text, user.UserID);
-    
     setText("");
+  
   };
-``
+  
   return (
     <div
       className="fixed inset-0 bg-black/70 flex justify-center items-center z-50 p-4"

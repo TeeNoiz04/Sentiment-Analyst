@@ -18,4 +18,3 @@ class BatchPostRequest(BaseModel):
 
 class SentimentRequestBody(BaseModel):
     data: List[PostRequest] 
-    selectedPage: Optional[int] = 0 # Thêm tham số int bạn cần

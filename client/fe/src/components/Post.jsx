@@ -35,6 +35,5 @@ export default function Post({ post }) {
             </p>
 
         </div>
-
     );
 };

@@ -22,15 +22,14 @@ import {
   YAxis,
 } from "recharts";
 
-const EmotionDashboard = ({ data, startDate, endDate, selectedPage, selectedTopic }) => {
+const EmotionDashboard = ({ data, startDate, endDate,selectedTopic }) => {
   const [timelineData, setTimelineData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    console.log("Zo emotion status");
+  useEffect(() => { 
     fetchSentimentTrend();
-  }, [startDate, endDate, selectedPage, selectedTopic]); // Add dependencies to useEffect
-  console.log("11 EmotionStats data prop:", data);
+  }, [startDate, endDate, selectedTopic]); // Add dependencies to useEffect
+
   // Calculate summary data from the provided data prop
   const summaryData = [
     { name: "Tích cực", value: data?.positive?.length || 0 },
@@ -50,7 +49,6 @@ const EmotionDashboard = ({ data, startDate, endDate, selectedPage, selectedTopi
     try {
       setLoading(true);
       let params = {
-        page: selectedPage,
         topic: selectedTopic,
         start_date: startDate,
         end_date: endDate
@@ -60,7 +58,7 @@ const EmotionDashboard = ({ data, startDate, endDate, selectedPage, selectedTopi
         params.end_date = new Date();
       } else {
         // Trường hợp 2: Có ít nhất một tham số ngày được cung cấp (hoặc sử dụng mặc định)
-        console.log("Fetching data with date constraints.");
+    
         let finalEndDate = endDate ? new Date(endDate) : new Date();
         let finalStartDate;
 
@@ -74,15 +72,14 @@ const EmotionDashboard = ({ data, startDate, endDate, selectedPage, selectedTopi
         params.start_date = formatDate(finalStartDate);
         params.end_date = formatDate(finalEndDate);
 
-        console.log(`Fetching data from ${params.start_date} to ${params.end_date}.`);
+    
       }
-      console.log("In EmotionStatus Fetching sentiment trend data with startDate:", startDate, "endDate:", endDate);
-
+    
       const response = await axios.get("http://127.0.0.1:8000/sentiment-trend", {
         params: params
       });
-
-      console.log("IN EmotionStatus Sentiment trend response 11:", response.data.data);
+      console.log("Sentiment trend response:", response.data);
+     
       if (response.data && response.data.data) {
         // Transform data to match the chart requirements
         const transformedData = response.data.data.map(item => ({
@@ -92,7 +89,6 @@ const EmotionDashboard = ({ data, startDate, endDate, selectedPage, selectedTopi
           Neutral: item.Neutral || 0
 
         }));
-        console.log("sss ll: ", transformedData);
         setTimelineData(transformedData);
       }
     } catch (error) {
