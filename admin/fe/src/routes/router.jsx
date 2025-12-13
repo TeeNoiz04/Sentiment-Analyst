@@ -6,6 +6,7 @@ import Home from "../pages/Home";
 import NotFound from "../pages/NotFound";
 import UserManagement from "../pages/UserManagement";
 import PostManagement from "../pages/PostManagement";
+import Profile from "../pages/Profile";
 // Kiểm tra login
 const ProtectedRoute = ({ children }) => {
   const userName = sessionStorage.getItem("userName");
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: "users", element: <UserManagement /> },
       { path: "posts", element: <PostManagement /> },
+      { path: "profile", element: <Profile /> },
     ],
   },
   { path: "*", element: <NotFound /> },

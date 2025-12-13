@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { 
-    FileText, 
-    Plus, 
-    Edit, 
-    Trash2, 
-    Search, 
-    Filter, 
-    Eye, 
-    User, 
+import {
+    FileText,
+    Plus,
+    Edit,
+    Trash2,
+    Search,
+    Filter,
+    Eye,
+    User,
     Calendar,
     ThumbsUp,
     ThumbsDown,
@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { notifyError, notifySuccess } from "../utils/toast";
-
+import { fetchPostsService, createPost, deletePost, updatePostStatus, updatePost} from "../services/postService";
 export default function PostManagement() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -47,16 +47,10 @@ export default function PostManagement() {
 
     // Categories - có thể lấy từ API
     const categories = [
-        'Công nghệ', 
-        'Giáo dục', 
-        'Thể thao', 
-        'Du lịch', 
-        'Ẩm thực', 
-        'Sức khỏe',
-        'Kinh doanh',
-        'Giải trí',
-        'Khoa học',
-        'Văn hóa'
+        { label: "Cơ sở vật chất", value: "LABEL_0" },
+        { label: "Giảng viên", value: "LABEL_1" },
+        { label: "Sinh viên", value: "LABEL_2" },
+        { label: "Chương trình đào tạo", value: "LABEL_3" },
     ];
 
     // Mock data - thay thế bằng API calls thực tế
@@ -67,74 +61,16 @@ export default function PostManagement() {
     const fetchPosts = async () => {
         setLoading(true);
         try {
+            const filters = {
+                skip: (currentPage - 1) * itemsPerPage,
+                limit: itemsPerPage,
+                status: statusFilter !== 'all' ? statusFilter : undefined,
+                category: categoryFilter !== 'all' ? categoryFilter : undefined
+            };
+            const response = await fetchPostsService(filters);
+            console.log("Fetched posts:", response);
             // Giả lập API call
-            const mockPosts = [
-                {
-                    PostID: 1,
-                    UserID: 1,
-                    Username: "admin",
-                    FullName: "Quản trị viên",
-                    Title: "Hướng dẫn sử dụng React Hooks hiệu quả",
-                    Content: "React Hooks là một tính năng mạnh mẽ được giới thiệu trong React 16.8. Trong bài viết này, chúng ta sẽ tìm hiểu cách sử dụng các hooks cơ bản như useState, useEffect...",
-                    Category: "Công nghệ",
-                    CreatedOn: "2024-12-10T10:30:00Z",
-                    Status: "approved",
-                    UpVotes: 45,
-                    DownVotes: 3
-                },
-                {
-                    PostID: 2,
-                    UserID: 2,
-                    Username: "user1",
-                    FullName: "Nguyễn Văn A",
-                    Title: "Top 10 địa điểm du lịch đẹp nhất Việt Nam",
-                    Content: "Việt Nam là một đất nước với nhiều cảnh đẹp tuyệt vời. Từ vịnh Hạ Long hùng vĩ đến những bãi biển thơ mộng ở Phú Quốc...",
-                    Category: "Du lịch",
-                    CreatedOn: "2024-12-09T14:15:00Z",
-                    Status: "approved",
-                    UpVotes: 128,
-                    DownVotes: 7
-                },
-                {
-                    PostID: 3,
-                    UserID: 3,
-                    Username: "user2",
-                    FullName: "Trần Thị B",
-                    Title: "Bí quyết nấu ăn ngon cho người mới bắt đầu",
-                    Content: "Nấu ăn không chỉ là một kỹ năng mà còn là một nghệ thuật. Với những bí quyết đơn giản sau đây, bạn có thể tạo ra những món ăn ngon...",
-                    Category: "Ẩm thực",
-                    CreatedOn: "2024-12-08T09:20:00Z",
-                    Status: "hidden",
-                    UpVotes: 67,
-                    DownVotes: 12
-                },
-                {
-                    PostID: 4,
-                    UserID: 1,
-                    Username: "admin",
-                    FullName: "Quản trị viên",
-                    Title: "Tầm quan trọng của việc tập thể dục hàng ngày",
-                    Content: "Tập thể dục đều đặn không chỉ giúp cải thiện sức khỏe thể chất mà còn có tác động tích cực đến tinh thần và tâm lý...",
-                    Category: "Sức khỏe",
-                    CreatedOn: "2024-12-07T16:45:00Z",
-                    Status: "approved",
-                    UpVotes: 89,
-                    DownVotes: 4
-                },
-                {
-                    PostID: 5,
-                    UserID: 2,
-                    Username: "user1",
-                    FullName: "Nguyễn Văn A",
-                    Title: "Khám phá những xu hướng công nghệ 2025",
-                    Content: "Năm 2025 hứa hẹn sẽ mang đến nhiều đột phá công nghệ mới. Từ AI generative đến quantum computing, hãy cùng tìm hiểu...",
-                    Category: "Công nghệ",
-                    CreatedOn: "2024-12-06T11:30:00Z",
-                    Status: "approved",
-                    UpVotes: 156,
-                    DownVotes: 8
-                }
-            ];
+            const mockPosts = response.posts || [];
             setPosts(mockPosts);
         } catch (error) {
             notifyError("Không thể tải danh sách bài viết");
@@ -169,6 +105,8 @@ export default function PostManagement() {
         if (window.confirm('Bạn có chắc chắn muốn xóa bài viết này?')) {
             try {
                 // API call để xóa post
+                const response = await deletePost(postId);
+                console.log("Deleted post:", response);
                 setPosts(posts.filter(post => post.PostID !== postId));
                 notifySuccess("Xóa bài viết thành công!");
             } catch (error) {
@@ -182,22 +120,18 @@ export default function PostManagement() {
         try {
             if (modalMode === 'create') {
                 // API call để tạo post mới
-                const newPost = {
-                    ...data,
-                    PostID: posts.length + 1,
-                    UserID: 1, // Lấy từ session
-                    Username: "admin", // Lấy từ session
-                    FullName: "Quản trị viên", // Lấy từ session
-                    CreatedOn: new Date().toISOString(),
-                    UpVotes: 0,
-                    DownVotes: 0
-                };
+                data.UserID = Number(sessionStorage.getItem("user_id")); // Lấy từ session
+                console.log("Creating post with data:", data);
+                const response = await createPost(data);
+                console.log("Created post:", response);    
+                const newPost = response;
                 setPosts([newPost, ...posts]);
                 notifySuccess("Tạo bài viết thành công!");
             } else if (modalMode === 'edit') {
-                // API call để cập nhật post
-                const updatedPosts = posts.map(post => 
-                    post.PostID === selectedPost.PostID 
+                const response = await updatePost(selectedPost.PostID, data);
+                console.log("Updated post:", response);
+                const updatedPosts = posts.map(post =>
+                    post.PostID === selectedPost.PostID
                         ? { ...post, ...data }
                         : post
                 );
@@ -215,11 +149,13 @@ export default function PostManagement() {
     const togglePostStatus = async (postId, currentStatus) => {
         try {
             const newStatus = currentStatus === 'approved' ? 'hidden' : 'approved';
-            const updatedPosts = posts.map(post => 
-                post.PostID === postId 
+            const updatedPosts = posts.map(post =>
+                post.PostID === postId
                     ? { ...post, Status: newStatus }
                     : post
             );
+            const response = await updatePostStatus(postId, newStatus);
+            console.log("Updated post status:", response);
             setPosts(updatedPosts);
             notifySuccess(`${newStatus === 'approved' ? 'Hiển thị' : 'Ẩn'} bài viết thành công!`);
         } catch (error) {
@@ -230,8 +166,8 @@ export default function PostManagement() {
     // Filter và search logic
     const filteredPosts = posts.filter(post => {
         const matchesSearch = post.Title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            post.Content?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            post.FullName?.toLowerCase().includes(searchTerm.toLowerCase());
+            post.Content?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            post.FullName?.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus = statusFilter === 'all' || post.Status === statusFilter;
         const matchesCategory = categoryFilter === 'all' || post.Category === categoryFilter;
         return matchesSearch && matchesStatus && matchesCategory;
@@ -369,7 +305,7 @@ export default function PostManagement() {
                                     >
                                         <option value="all">Tất cả chủ đề</option>
                                         {categories.map(category => (
-                                            <option key={category} value={category}>{category}</option>
+                                            <option key={category.value} value={category.value}>{category.label}</option>
                                         ))}
                                     </select>
                                 </div>
@@ -407,23 +343,25 @@ export default function PostManagement() {
                                                 </p>
                                             </div>
                                         </td>
-                                      
+
                                         <td className="px-6 py-4">
                                             {post.Category && (
                                                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                                                    {post.Category}
+                                                    {
+                                                        categories.find(t => t.value === post.Category)?.label
+                                                        || post.Category
+                                                    }
                                                 </span>
                                             )}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                                                post.Status === 'approved' 
+                                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${post.Status === 'approved'
                                                     ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                                     : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                                            }`}>
+                                                }`}>
                                                 {post.Status === 'approved' ? 'Đã duyệt' : 'Đã ẩn'}
                                             </span>
-                                        </td>       
+                                        </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
                                                 <button
@@ -442,11 +380,10 @@ export default function PostManagement() {
                                                 </button>
                                                 <button
                                                     onClick={() => togglePostStatus(post.PostID, post.Status)}
-                                                    className={`p-2 rounded-lg transition-colors ${
-                                                        post.Status === 'approved'
+                                                    className={`p-2 rounded-lg transition-colors ${post.Status === 'approved'
                                                             ? 'text-orange-600 hover:bg-orange-100 dark:hover:bg-orange-900/30'
                                                             : 'text-green-600 hover:bg-green-100 dark:hover:bg-green-900/30'
-                                                    }`}
+                                                        }`}
                                                     title={post.Status === 'approved' ? 'Ẩn bài viết' : 'Hiển thị bài viết'}
                                                 >
                                                     {post.Status === 'approved' ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -485,11 +422,10 @@ export default function PostManagement() {
                                         <button
                                             key={index + 1}
                                             onClick={() => setCurrentPage(index + 1)}
-                                            className={`px-3 py-2 text-sm rounded-lg ${
-                                                currentPage === index + 1
+                                            className={`px-3 py-2 text-sm rounded-lg ${currentPage === index + 1
                                                     ? 'bg-blue-600 text-white'
                                                     : 'border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
-                                            }`}
+                                                }`}
                                         >
                                             {index + 1}
                                         </button>
@@ -513,7 +449,7 @@ export default function PostManagement() {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
                     <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 w-full max-w-4xl max-h-[90vh] overflow-hidden">
                         <div className="h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-                        
+
                         <div className="p-6">
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -619,9 +555,8 @@ export default function PostManagement() {
                                                         required: "Tiêu đề không được bỏ trống",
                                                         maxLength: { value: 255, message: "Tiêu đề không được quá 255 ký tự" }
                                                     })}
-                                                    className={`w-full px-4 py-3 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                                                        errors.Title ? "border-red-500" : "border-gray-200 dark:border-gray-600"
-                                                    }`}
+                                                    className={`w-full px-4 py-3 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.Title ? "border-red-500" : "border-gray-200 dark:border-gray-600"
+                                                        }`}
                                                     placeholder="Nhập tiêu đề bài viết..."
                                                 />
                                                 {errors.Title && (
@@ -630,7 +565,7 @@ export default function PostManagement() {
                                             </div>
 
                                             {/* Category */}
-                                            <div>
+                                            <div className={modalMode === 'create' ? 'lg:col-span-2' : ''}>
                                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                     Chủ đề
                                                 </label>
@@ -640,24 +575,26 @@ export default function PostManagement() {
                                                 >
                                                     <option value="">Chọn chủ đề</option>
                                                     {categories.map(category => (
-                                                        <option key={category} value={category}>{category}</option>
+                                                        <option key={category.value} value={category.value}>{category.label}</option>
                                                     ))}
                                                 </select>
                                             </div>
 
-                                            {/* Status */}
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                    Trạng thái
-                                                </label>
-                                                <select
-                                                    {...register("Status")}
-                                                    className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                >
-                                                    <option value="approved">Đã duyệt</option>
-                                                    <option value="hidden">Đã ẩn</option>
-                                                </select>
-                                            </div>
+                                            {/* Status - Only show in edit mode */}
+                                            {modalMode === 'edit' && (
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                        Trạng thái
+                                                    </label>
+                                                    <select
+                                                        {...register("Status")}
+                                                        className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    >
+                                                        <option value="approved">Đã duyệt</option>
+                                                        <option value="hidden">Đã ẩn</option>
+                                                    </select>
+                                                </div>
+                                            )}
 
                                             {/* Content */}
                                             <div className="lg:col-span-2">
@@ -669,9 +606,8 @@ export default function PostManagement() {
                                                         required: "Nội dung không được bỏ trống"
                                                     })}
                                                     rows={8}
-                                                    className={`w-full px-4 py-3 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
-                                                        errors.Content ? "border-red-500" : "border-gray-200 dark:border-gray-600"
-                                                    }`}
+                                                    className={`w-full px-4 py-3 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${errors.Content ? "border-red-500" : "border-gray-200 dark:border-gray-600"
+                                                        }`}
                                                     placeholder="Nhập nội dung bài viết..."
                                                 />
                                                 {errors.Content && (

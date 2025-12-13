@@ -20,6 +20,7 @@ class PostStatus(str, enum.Enum):
     """Post status enum"""
     APPROVED = "approved"
     HIDDEN = "hidden"
+    DELETED = "deleted"
 
 
 class VoteType(str, enum.Enum):

@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { Home, PenSquare, Users, User, LogOut, Menu, X, Sparkles } from "lucide-react";
 function Navbar() {
   const navigate = useNavigate();
-  const userName = "John Doe"; // Mock data
+  const userName = sessionStorage.getItem("userName") || "Người dùng"; 
+  const email = sessionStorage.getItem("email") || "Chưa có email";
   const [openMenu, setOpenMenu] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuRef = useRef();
@@ -13,6 +14,10 @@ function Navbar() {
   console.log("Current Path:", currentPath);
   const handleLogout = () => {
     sessionStorage.removeItem("userName");
+    sessionStorage.removeItem("email");
+    sessionStorage.removeItem("user_id");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     navigate("/login", { replace: true });
     setOpenMenu(false);
   };
@@ -33,6 +38,7 @@ function Navbar() {
         setOpenMenu(false);
       }
     };
+   
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -98,7 +104,7 @@ function Navbar() {
                 <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                   <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                     <p className="font-semibold text-gray-900 dark:text-white">{userName}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">user@example.com</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{email}</p>
                   </div>
                   
                   <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition" onClick={handleProfile}>

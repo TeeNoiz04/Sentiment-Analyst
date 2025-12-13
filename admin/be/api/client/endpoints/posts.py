@@ -48,8 +48,9 @@ async def get_posts(
     """Get list of posts with pagination"""
     query = db.query(Post)
     # Apply filters
+    query = query.filter(Post.Status != PostStatus.DELETED.value)
     if status:
-        query = query.filter(Post.Status == status)
+        query = query.filter(Post.Status == status, Post.Status != PostStatus.DELETED.value)
     if category:
         query = query.filter(Post.Category == category)
     if start_date:
@@ -77,7 +78,7 @@ async def get_posts(
 @router.get("/{post_id}", response_model=PostResponse)
 async def get_post(post_id: int, db: Session = Depends(get_db)):
     """Get a specific post by ID"""
-    post = db.query(Post).filter(Post.PostID == post_id).first()
+    post = db.query(Post).filter(Post.PostID == post_id, Post.Status != PostStatus.DELETED.value).first()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     return post
@@ -90,7 +91,7 @@ async def update_post(
     db: Session = Depends(get_db)
 ):
     """Update a post"""
-    post = db.query(Post).filter(Post.PostID == post_id).first()
+    post = db.query(Post).filter(Post.PostID == post_id, Post.Status != PostStatus.DELETED.value).first()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     
@@ -115,12 +116,12 @@ async def update_post(
 @router.delete("/{post_id}", status_code=204)
 async def delete_post(post_id: int, db: Session = Depends(get_db)):
     """Delete a post (soft delete by setting status to hidden)"""
-    post = db.query(Post).filter(Post.PostID == post_id).first()
+    post = db.query(Post).filter(Post.PostID == post_id, Post.Status != PostStatus.DELETED.value).first()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     
     try:
-        post.Status = PostStatus.HIDDEN.value
+        post.Status = PostStatus.DELETED.value
         db.commit()
         return None
     except Exception as e:
@@ -131,7 +132,7 @@ async def delete_post(post_id: int, db: Session = Depends(get_db)):
 @router.get("/{post_id}/stats", response_model=dict)
 async def get_post_stats(post_id: int, db: Session = Depends(get_db)):
     """Get statistics for a post"""
-    post = db.query(Post).filter(Post.PostID == post_id).first()
+    post = db.query(Post).filter(Post.PostID == post_id, Post.Status != PostStatus.DELETED.value).first()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     
@@ -150,7 +151,7 @@ async def get_post_stats(post_id: int, db: Session = Depends(get_db)):
 @router.get("/{post_id}/comments/count", response_model=dict)
 async def get_comments_count(post_id: int, db: Session = Depends(get_db)):
     """Get comment count for a post"""
-    post = db.query(Post).filter(Post.PostID == post_id).first()
+    post = db.query(Post).filter(Post.PostID == post_id, Post.Status != PostStatus.DELETED.value).first()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     
@@ -172,7 +173,7 @@ async def get_comments_by_post(
 ):
     """Get list of comments for a specific post (with pagination) including user info"""
     # ensure post exists
-    post = db.query(Post).filter(Post.PostID == post_id).first()
+    post = db.query(Post).filter(Post.PostID == post_id, Post.Status != PostStatus.DELETED.value).first()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
 
@@ -209,7 +210,7 @@ async def like_post(
     db: Session = Depends(get_db)
 ):
     """Like/unlike a post (toggle)"""
-    post = db.query(Post).filter(Post.PostID == post_id).first()
+    post = db.query(Post).filter(Post.PostID == post_id, Post.Status != PostStatus.DELETED.value).first()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     
@@ -246,3 +247,23 @@ async def like_post(
         "liked": liked,
         "likes": post.UpVotes
     }
+
+@router.put("/{post_id}/status", response_model=PostResponse)
+async def update_post_status(
+    post_id: int,
+    status: str = Query(..., description="New status for the post: approved, hidden"),
+    db: Session = Depends(get_db)
+):
+    """Update the status of a post"""
+    post = db.query(Post).filter(Post.PostID == post_id, Post.Status != PostStatus.DELETED.value).first()
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    
+    try:
+        post.Status = status
+        db.commit()
+        db.refresh(post)
+        return post
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error updating post status: {str(e)}")

@@ -13,8 +13,11 @@ export default function Login() {
 
     useEffect(() => {
         if (user && token) {
+            console.log("Storing user session:", user);
             localStorage.setItem("access_token", token);
             sessionStorage.setItem("user_id", user.user_id);
+            sessionStorage.setItem("userName", user.username);
+            sessionStorage.setItem("email", user.email);
         }
     }, [user, token]);
 
@@ -37,7 +40,6 @@ export default function Login() {
             notifySuccess("Đăng nhập thành công!");
             setUser(res.data.user);
             setToken(res.data.access_token);
-            sessionStorage.setItem("userName", res.data.user.Username);
             navigate("/");
         } else {
             notifyError(res.message || "Đăng nhập thất bại. Vui lòng thử lại.");

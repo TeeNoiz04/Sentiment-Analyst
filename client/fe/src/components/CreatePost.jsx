@@ -23,8 +23,8 @@ export default function CreatePost({ onSubmit }) {
 
     setErrors(newErrors);
     if (hasError) return;
-
-    let data = { Title: title, Content: content, UserID: 1 };
+    const userId = Number(sessionStorage.getItem("user_id")) || 1;
+    let data = { Title: title, Content: content, UserID: userId };
     onSubmit(data);
     setTitle("");
     setContent("");
