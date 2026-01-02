@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { Home, PenSquare, Users, User, LogOut, Menu, X, Sparkles } from "lucide-react";
 function Navbar() {
   const navigate = useNavigate();
-  const userName = "John Doe"; // Mock data
+  const userName = sessionStorage.getItem("userName") || "Người dùng"; 
+  const email = sessionStorage.getItem("email") || "Chưa có email";
   const [openMenu, setOpenMenu] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuRef = useRef();
@@ -13,6 +14,10 @@ function Navbar() {
   console.log("Current Path:", currentPath);
   const handleLogout = () => {
     sessionStorage.removeItem("userName");
+    sessionStorage.removeItem("email");
+    sessionStorage.removeItem("user_id");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     navigate("/login", { replace: true });
     setOpenMenu(false);
   };

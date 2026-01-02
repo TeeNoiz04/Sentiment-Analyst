@@ -1,51 +1,175 @@
-import { Code, Database, Brain, Palette, Users, Zap, Heart, Sparkles, Github, Linkedin, Mail } from "lucide-react";
+//import { Code, Database, Brain, Palette, Users, Zap,PenTool,FileText,Settings, Heart, Sparkles, Github, Linkedin, Mail } from "lucide-react";
+import {
+  Code, Database, Brain, Palette, Users, Zap,
+  PenTool, FileText, Settings,
+  Heart, Sparkles, Github, Linkedin, Mail
+} from "lucide-react";
+import { Presentation } from "lucide-react";
 
 export default function About() {
-  const teamMembers = [
+  // const teamMembers = [
+  //   {
+  //     name: "Phạm Thị Ngọc Oanh",
+  //     role: "Trưởng nhóm, Nhà khoa học dữ liệu, Lập trình viên",
+  //     avatar: "Screenshot 2025-12-07 224628.png",
+  //     color: "from-pink-500 to-rose-500",
+  //     bgColor: "from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20",
+  //     responsibilities: [
+  //       { icon: <Brain className="w-4 h-4" />, text: "Nghiên cứu mô hình NLP và phân tích cảm xúc" },
+  //       { icon: <Database className="w-4 h-4" />, text: "Thực hiện tiền xử lý dữ liệu" },
+  //       { icon: <Zap className="w-4 h-4" />, text: "Đánh giá và tối ưu hóa mô hình" },
+  //       { icon: <Code className="w-4 h-4" />, text: "Xây dựng backend và API với Python" },
+  //       { icon: <Sparkles className="w-4 h-4" />, text: "Tích hợp API phân tích cảm xúc vào website" },
+  //       { icon: <Zap className="w-4 h-4" />, text: "Kiểm thử chức năng AI" },
+  //       { icon: <Users className="w-4 h-4" />, text: "Lên kế hoạch, điều phối và phân công công việc nhóm" }
+  //     ],
+  //     socialLinks: {
+  //       github: "https://github.com/oripham",
+  //       linkedin: "https://www.linkedin.com/in/oripham",
+  //       email: "mailto:6351071055@utc2.st.edu.vn"
+  //     }
+  //   },
+  //   {
+  //     name: "Đỗ Văn Thành Được",
+  //     role: "Phân tích viên, Thiết kế viên, Quản trị CSDL, Kiểm thử viên",
+  //     avatar: "avatar-shin-cute-2.jpeg",
+  //     color: "from-blue-500 to-cyan-500",
+  //     bgColor: "from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20",
+  //     responsibilities: [
+  //       { icon: <Code className="w-4 h-4" />, text: "Phát triển frontend bằng React.js" },
+  //       { icon: <Database className="w-4 h-4" />, text: "Phối hợp tiền xử lý dữ liệu" },
+  //       { icon: <Brain className="w-4 h-4" />, text: "Phân tích yêu cầu hệ thống" },
+  //       { icon: <Palette className="w-4 h-4" />, text: "Thiết kế UI/UX, dashboard hiển thị kết quả" },
+  //       { icon: <Database className="w-4 h-4" />, text: "Thiết kế & quản lý cơ sở dữ liệu" },
+  //       { icon: <Zap className="w-4 h-4" />, text: "Kiểm thử hệ thống (chức năng, hiệu suất, bảo mật)" },
+  //       { icon: <Sparkles className="w-4 h-4" />, text: "Viết tài liệu hướng dẫn sử dụng" }
+  //     ],
+  //     socialLinks: {
+  //       github: "https://github.com/TeeNoiz04",
+  //       linkedin: "https://www.linkedin.com/in/noiz-tee-b79557356/",
+  //       email: "mailto:duoc14525@gmail.com"
+  //     }
+  //   }
+  // ];
+
+   const teamMembers = [
     {
       name: "Phạm Thị Ngọc Oanh",
-      role: "Trưởng nhóm, Nhà khoa học dữ liệu, Lập trình viên",
-      avatar: "Screenshot 2025-12-07 224628.png",
-      color: "from-pink-500 to-rose-500",
-      bgColor: "from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20",
+      role: "AI/ML Engineer & Backend Developer",
+      avatar: "Screenshot 2025-12-07 224628.png", // Thay đổi tên file avatar
+      color: "from-purple-500 to-pink-500",
+      bgColor: "from-purple-100 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20",
       responsibilities: [
-        { icon: <Brain className="w-4 h-4" />, text: "Nghiên cứu mô hình NLP và phân tích cảm xúc" },
-        { icon: <Database className="w-4 h-4" />, text: "Thực hiện tiền xử lý dữ liệu" },
-        { icon: <Zap className="w-4 h-4" />, text: "Đánh giá và tối ưu hóa mô hình" },
-        { icon: <Code className="w-4 h-4" />, text: "Xây dựng backend và API với Python" },
-        { icon: <Sparkles className="w-4 h-4" />, text: "Tích hợp API phân tích cảm xúc vào website" },
-        { icon: <Zap className="w-4 h-4" />, text: "Kiểm thử chức năng AI" },
-        { icon: <Users className="w-4 h-4" />, text: "Lên kế hoạch, điều phối và phân công công việc nhóm" }
+        { 
+          icon: <PenTool className="w-4 h-4" />, 
+          text: "Tham gia gán nhãn dữ liệu" 
+        },
+        { 
+          icon: <FileText className="w-4 h-4" />, 
+          text: "Tìm hiểu và triển khai các phương pháp tóm tắt văn bản" 
+        },
+        { 
+          icon: <Brain className="w-4 h-4" />, 
+          text: "Đề xuất và xây dựng kiến trúc mô hình học đa nhiệm (multitask) dựa trên PhoBERT" 
+        },
+        { 
+          icon: <Code className="w-4 h-4" />, 
+          text: "Hỗ trợ xây dựng backend cho hệ thống website phân tích" 
+        }
       ],
       socialLinks: {
-        github: "https://github.com/oripham",
-        linkedin: "https://www.linkedin.com/in/oripham",
-        email: "mailto:6351071055@utc2.st.edu.vn"
+        github: "https://github.com/oanh",
+        linkedin: "https://linkedin.com/in/oanh",
+        email: "oanh@example.com"
       }
     },
     {
       name: "Đỗ Văn Thành Được",
-      role: "Phân tích viên, Thiết kế viên, Quản trị CSDL, Kiểm thử viên",
-      avatar: "avatar-shin-cute-2.jpeg",
+      role: "Full-stack Developer & Data Collector",
+      avatar: "avatar-shin-cute-2.jpeg", // Thay đổi tên file avatar
       color: "from-blue-500 to-cyan-500",
-      bgColor: "from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20",
+      bgColor: "from-blue-100 to-cyan-100 dark:from-blue-900/20 dark:to-cyan-900/20",
       responsibilities: [
-        { icon: <Code className="w-4 h-4" />, text: "Phát triển frontend bằng React.js" },
-        { icon: <Database className="w-4 h-4" />, text: "Phối hợp tiền xử lý dữ liệu" },
-        { icon: <Brain className="w-4 h-4" />, text: "Phân tích yêu cầu hệ thống" },
-        { icon: <Palette className="w-4 h-4" />, text: "Thiết kế UI/UX, dashboard hiển thị kết quả" },
-        { icon: <Database className="w-4 h-4" />, text: "Thiết kế & quản lý cơ sở dữ liệu" },
-        { icon: <Zap className="w-4 h-4" />, text: "Kiểm thử hệ thống (chức năng, hiệu suất, bảo mật)" },
-        { icon: <Sparkles className="w-4 h-4" />, text: "Viết tài liệu hướng dẫn sử dụng" }
+        { 
+          icon: <Database className="w-4 h-4" />, 
+          text: "Thu thập dữ liệu" 
+        },
+        { 
+          icon: <Code className="w-4 h-4" />, 
+          text: "Xây dựng giao diện và luồng xử lý cho hệ thống website phân tích" 
+        },
+        { 
+          icon: <PenTool className="w-4 h-4" />, 
+          text: "Tham gia gán nhãn dữ liệu" 
+        }
       ],
       socialLinks: {
-        github: "https://github.com/TeeNoiz04",
-        linkedin: "https://www.linkedin.com/in/noiz-tee-b79557356/",
-        email: "mailto:duoc14525@gmail.com"
+        github: "https://github.com/duoc",
+        linkedin: "https://linkedin.com/in/duoc",
+        email: "duoc@example.com"
+      }
+    },
+    {
+      name: "Trần Phương Anh",
+      role: "Data Engineer & Documentation Specialist",
+      avatar: "anh.jpg", // Thay đổi tên file avatar
+      color: "from-green-500 to-emerald-500",
+      bgColor: "from-green-100 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20",
+      responsibilities: [
+        { 
+          icon: <Database className="w-4 h-4" />, 
+          text: "Thu thập dữ liệu" 
+        },
+        { 
+          icon: <Settings className="w-4 h-4" />, 
+          text: "Tìm hiểu về quá trình tiền xử lý dữ liệu và triển khai" 
+        },
+        { 
+          icon: <PenTool className="w-4 h-4" />, 
+          text: "Tham gia gán nhãn dữ liệu" 
+        },
+        { 
+          icon: <FileText className="w-4 h-4" />, 
+          text: "Viết báo cáo" 
+        }
+      ],
+      socialLinks: {
+        github: "https://github.com/anh",
+        linkedin: "https://linkedin.com/in/anh",
+        email: "anh@example.com"
+      }
+    },
+    {
+      name: "Lê Đình Khôi",
+      role: "ML Researcher & Presentation Designer",
+      avatar: "khoi.jpg", // Thay đổi tên file avatar
+      color: "from-orange-500 to-red-500",
+      bgColor: "from-orange-100 to-red-100 dark:from-orange-900/20 dark:to-red-900/20",
+      responsibilities: [
+        { 
+          icon: <Database className="w-4 h-4" />, 
+          text: "Thu thập dữ liệu" 
+        },
+        { 
+          icon: <Brain className="w-4 h-4" />, 
+          text: "Tìm hiểu các phương pháp phân tích cảm xúc và triển khai" 
+        },
+        { 
+          icon: <PenTool className="w-4 h-4" />, 
+          text: "Tham gia gán nhãn dữ liệu" 
+        },
+        { 
+          icon: <Presentation className="w-4 h-4" />, 
+          text: "Thiết kế slide" 
+        }
+      ],
+      socialLinks: {
+        github: "https://github.com/khoi",
+        linkedin: "https://linkedin.com/in/khoi",
+        email: "khoi@example.com"
       }
     }
   ];
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900">
       {/* Hero Section */}
@@ -86,7 +210,7 @@ export default function About() {
       </div>
 
       {/* Team Members */}
-      <div className="max-w-7xl mx-auto px-4 py-12 sm:py-16">
+   <div className="max-w-7xl mx-auto px-4 py-12 sm:py-16">
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
           {teamMembers.map((member, index) => (
             <div
@@ -101,7 +225,16 @@ export default function About() {
                 {/* Avatar & Header */}
                 <div className="flex items-start gap-6 mb-6">
                   <div className={`flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br ${member.color} rounded-2xl shadow-lg flex items-center justify-center text-4xl sm:text-5xl transform group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500`}>
-                    <img src={`../img/${member.avatar}`} alt="avatar" className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-2xl" />
+                    <img 
+                      src={`../img/${member.avatar}`} 
+                      alt={member.name}
+                      className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-2xl" 
+                      onError={(e) => {
+                        // Fallback to initials if image fails to load
+                        e.target.style.display = 'none';
+                        e.target.parentElement.innerHTML = member.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                      }}
+                    />
                   </div>
 
                   <div className="flex-1 min-w-0">
@@ -137,15 +270,15 @@ export default function About() {
                   ))}
                 </div>
 
-                {/* Social Links (Optional) */}
+                {/* Social Links */}
                 <div className="flex gap-3 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-
                   {/* Github */}
                   <a
                     href={member.socialLinks.github}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`p-2 bg-gradient-to-r ${member.color} text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110`}
+                    aria-label="Github"
                   >
                     <Github className="w-5 h-5" />
                   </a>
@@ -156,6 +289,7 @@ export default function About() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`p-2 bg-gradient-to-r ${member.color} text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110`}
+                    aria-label="LinkedIn"
                   >
                     <Linkedin className="w-5 h-5" />
                   </a>
@@ -164,12 +298,11 @@ export default function About() {
                   <a
                     href={`mailto:${member.socialLinks.email}`}
                     className={`p-2 bg-gradient-to-r ${member.color} text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110`}
+                    aria-label="Email"
                   >
                     <Mail className="w-5 h-5" />
                   </a>
-
                 </div>
-
               </div>
 
               {/* Bottom Accent */}

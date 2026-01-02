@@ -3,12 +3,23 @@ User endpoints - Create and find by device_id
 """
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from typing import Optional
+from pydantic import BaseModel
 from core.database import get_db
-from models.database import User
+from models.database import User,Post, Vote
 from models.schemas import UserCreate, UserUpdate, UserResponse, UserListResponse
+from utils.auth import get_current_user
 
 router = APIRouter()
+
+
+class ProfileUpdate(BaseModel):
+    """Schema for profile update"""
+    UserID: int
+    name: Optional[str] = None
+    email: Optional[str] = None
+    avatar_url: Optional[str] = None
 
 
 @router.post("", response_model=UserResponse, status_code=201)
@@ -155,3 +166,72 @@ async def update_user_status(user_id: int, status: str = Query(..., description=
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Error updating user status: {str(e)}")
+    
+
+@router.get("/{user_id}/activity")
+async def get_user_activity(user_id: int, db: Session = Depends(get_db)):
+    """Get user activity statistics - posts count and total likes received"""
+    try:
+        # Check if user exists
+        user = db.query(User).filter(User.UserID == user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Count user's posts
+        posts_count = db.query(func.count(Post.PostID)).filter(Post.UserID == user_id).scalar()
+        
+        # Count total likes (upvotes) received on user's posts
+        likes_count = db.query(func.sum(Post.UpVotes)).filter(Post.UserID == user_id).scalar()
+        
+        return {
+            "status": 200,
+            "data": {
+                "posts": posts_count or 0,
+                "likes": likes_count or 0
+            }
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error fetching user activity: {str(e)}")
+
+
+@router.patch("/profile", response_model=UserResponse)
+async def update_profile(
+    profile_update: ProfileUpdate,
+    db: Session = Depends(get_db)
+):
+    """Update current user profile (name, email, avatar)"""
+    try:
+        user = db.query(User).filter(User.UserID == profile_update.UserID ).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Update name (FullName)
+        if profile_update.name is not None:
+            user.FullName = profile_update.name
+        
+        # Update email
+        if profile_update.email is not None:
+            # Check if email is already taken by another user
+            existing = db.query(User).filter(
+                User.Email == profile_update.email,
+                User.UserID != profile_update.UserID
+            ).first()
+            if existing:
+                raise HTTPException(status_code=400, detail="Email already taken")
+            user.Email = profile_update.email
+        
+        # Update avatar
+        if profile_update.avatar_url is not None:
+            user.AvatarURL = profile_update.avatar_url
+        
+        db.commit()
+        db.refresh(user)
+        
+        return user
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error updating profile: {str(e)}")

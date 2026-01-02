@@ -3,9 +3,10 @@ User endpoints - Create and find by device_id
 """
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from typing import Optional
 from core.database import get_db
-from models.database import User
+from models.database import User, Post, Vote
 from models.schemas import UserCreate, UserUpdate, UserResponse, UserListResponse
 
 router = APIRouter()
@@ -138,3 +139,4 @@ async def update_user(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Error updating user: {str(e)}")
+

@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Optional
 from core.database import get_db
-from models.database import Post, PostStatus
+from models.database import Post, PostStatus, User
 from models.schemas import (
     PostCreate, PostUpdate, PostResponse, PostListResponse, CommentListResponse
 )
@@ -46,7 +46,14 @@ async def get_posts(
     db: Session = Depends(get_db)
 ):
     """Get list of posts with pagination"""
-    query = db.query(Post)
+    query = (
+        db.query(
+            Post,
+            User.Username.label("Username")
+        )
+        .join(User, User.UserID == Post.UserID)
+        .filter(Post.Status != PostStatus.DELETED.value)
+    )
     # Apply filters
     query = query.filter(Post.Status != PostStatus.DELETED.value)
     if status:
@@ -68,9 +75,17 @@ async def get_posts(
 
     # Get total count
     total = query.count()
-    
-    # Apply pagination
-    posts = query.order_by(Post.CreatedOn.desc()).offset(skip).limit(limit).all()
+    results = (
+        query
+        .order_by(Post.CreatedOn.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+    posts = []
+    for post, username in results:
+        post.Username = username
+        posts.append(post)
     
     return PostListResponse(total=total, posts=posts)
 

@@ -185,7 +185,7 @@ class PostResponse(PostBase):
     UpVotes: int
     DownVotes: int
     CreatedOn: datetime
-    
+    Username: Optional[str] = None
     class Config:
         from_attributes = True
 

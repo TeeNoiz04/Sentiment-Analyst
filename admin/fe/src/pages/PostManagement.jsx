@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { notifyError, notifySuccess } from "../utils/toast";
-import { fetchPostsService, createPost, deletePost, updatePostStatus, updatePost} from "../services/postService";
+import { fetchPostsService, createPost, deletePost, updatePostStatus, updatePost } from "../services/postService";
 export default function PostManagement() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -57,6 +57,7 @@ export default function PostManagement() {
     useEffect(() => {
         fetchPosts();
     }, []);
+    
 
     const fetchPosts = async () => {
         setLoading(true);
@@ -69,8 +70,8 @@ export default function PostManagement() {
             };
             const response = await fetchPostsService(filters);
             console.log("Fetched posts:", response);
-            // Giả lập API call
             const mockPosts = response.posts || [];
+
             setPosts(mockPosts);
         } catch (error) {
             notifyError("Không thể tải danh sách bài viết");
@@ -97,6 +98,7 @@ export default function PostManagement() {
 
     const handleView = (post) => {
         setModalMode('view');
+        console.log("Viewing post:", post);
         setSelectedPost(post);
         setShowModal(true);
     };
@@ -123,7 +125,7 @@ export default function PostManagement() {
                 data.UserID = Number(sessionStorage.getItem("user_id")); // Lấy từ session
                 console.log("Creating post with data:", data);
                 const response = await createPost(data);
-                console.log("Created post:", response);    
+                console.log("Created post:", response);
                 const newPost = response;
                 setPosts([newPost, ...posts]);
                 notifySuccess("Tạo bài viết thành công!");
@@ -356,8 +358,8 @@ export default function PostManagement() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${post.Status === 'approved'
-                                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                                                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                                                 }`}>
                                                 {post.Status === 'approved' ? 'Đã duyệt' : 'Đã ẩn'}
                                             </span>
@@ -381,8 +383,8 @@ export default function PostManagement() {
                                                 <button
                                                     onClick={() => togglePostStatus(post.PostID, post.Status)}
                                                     className={`p-2 rounded-lg transition-colors ${post.Status === 'approved'
-                                                            ? 'text-orange-600 hover:bg-orange-100 dark:hover:bg-orange-900/30'
-                                                            : 'text-green-600 hover:bg-green-100 dark:hover:bg-green-900/30'
+                                                        ? 'text-orange-600 hover:bg-orange-100 dark:hover:bg-orange-900/30'
+                                                        : 'text-green-600 hover:bg-green-100 dark:hover:bg-green-900/30'
                                                         }`}
                                                     title={post.Status === 'approved' ? 'Ẩn bài viết' : 'Hiển thị bài viết'}
                                                 >
@@ -423,8 +425,8 @@ export default function PostManagement() {
                                             key={index + 1}
                                             onClick={() => setCurrentPage(index + 1)}
                                             className={`px-3 py-2 text-sm rounded-lg ${currentPage === index + 1
-                                                    ? 'bg-blue-600 text-white'
-                                                    : 'border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                                                ? 'bg-blue-600 text-white'
+                                                : 'border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
                                                 }`}
                                         >
                                             {index + 1}
@@ -492,11 +494,19 @@ export default function PostManagement() {
                                                         </div>
                                                         <div className="flex justify-between">
                                                             <span className="text-gray-600 dark:text-gray-400">Tác giả:</span>
-                                                            <span className="font-medium">{selectedPost?.FullName}</span>
+                                                            <span className="font-medium">{selectedPost?.Username || 'Unknown'}</span>
                                                         </div>
                                                         <div className="flex justify-between">
                                                             <span className="text-gray-600 dark:text-gray-400">Chủ đề:</span>
-                                                            <span className="font-medium">{selectedPost?.Category || 'Chưa phân loại'}</span>
+                                                            {/* <span className="font-medium">{selectedPost?.Category || 'Chưa phân loại'}</span> */}
+                                                            {selectedPost.Category && (
+                                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                                                                    {
+                                                                        categories.find(t => t.value === selectedPost.Category)?.label
+                                                                        || selectedPost.Category
+                                                                    }
+                                                                </span>
+                                                            )}
                                                         </div>
                                                         <div className="flex justify-between">
                                                             <span className="text-gray-600 dark:text-gray-400">Trạng thái:</span>

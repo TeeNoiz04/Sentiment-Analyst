@@ -16,6 +16,8 @@ export default function Login() {
         if (user && token) {
             localStorage.setItem("access_token", token);
             sessionStorage.setItem("user_id", user.user_id);
+            sessionStorage.setItem("userName", user.username);
+            sessionStorage.setItem("email", user.email);
         }
     }, [user, token]);
 
