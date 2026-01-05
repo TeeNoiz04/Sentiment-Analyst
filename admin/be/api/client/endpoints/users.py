@@ -1,15 +1,22 @@
 """
 User endpoints - Create and find by device_id
 """
-from fastapi import APIRouter, Depends, HTTPException, Query
+from datetime import datetime, timedelta
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import Optional
 from pydantic import BaseModel
 from core.database import get_db
-from models.database import User,Post, Vote
-from models.schemas import UserCreate, UserUpdate, UserResponse, UserListResponse
-from utils.auth import get_current_user
+from models.database import User, Post, UserSession, SessionStatus
+from models.schemas import UserUpdate, UserResponse, UserListResponse
+from models.auth_schemas import RegisterRequest, RegisterRequest1
+from utils.auth import (
+    get_current_user,
+    get_password_hash,
+    create_access_token,
+    create_refresh_token,
+)
 
 router = APIRouter()
 
@@ -22,38 +29,81 @@ class ProfileUpdate(BaseModel):
     avatar_url: Optional[str] = None
 
 
-@router.post("", response_model=UserResponse, status_code=201)
-async def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    """Create a new user by device_id or username"""
+@router.post("", response_model=dict, status_code=201)
+async def register(request: RegisterRequest1, req: Request, db: Session = Depends(get_db)):
+    """Register a new user with password hashing and initial session"""
     try:
-        if user.DeviceID:
-            existing_user = db.query(User).filter(User.DeviceID == user.DeviceID).first()
-            if existing_user:
-                return existing_user
-        
-        if user.Username:
-            existing_user = db.query(User).filter(User.Username == user.Username).first()
-            if existing_user:
-                raise HTTPException(status_code=400, detail="Username already exists")
-        
-        db_user = User(
-            DeviceID=user.DeviceID,
-            Username=user.Username,
-            PasswordHash=user.PasswordHash,
-            FullName=user.FullName,
-            Email=user.Email,
-            AvatarURL=user.AvatarURL,
-            Status="active"
+        # Confirm password match
+        if request.PasswordHash != request.ConfirmPassword:
+            return {"status": 400, "message": "Mật khẩu xác nhận không khớp"}
+
+        # Check username
+        existing_user = db.query(User).filter(User.Username == request.Username).first()
+        if existing_user:
+            return {"status": 400, "message": "Tên đăng nhập đã được đăng ký"}
+
+        # Check email
+        if request.Email:
+            existing_email = db.query(User).filter(User.Email == request.Email).first()
+            if existing_email:
+                return {"status": 400, "message": "Email đã được đăng ký"}
+
+        # Check device
+        if request.DeviceID:
+            existing_device = db.query(User).filter(User.DeviceID == request.DeviceID).first()
+            if existing_device:
+                return {"status": 400, "message": "Thiết bị đã được đăng ký"}
+
+        # Create user with hashed password
+        hashed_password = get_password_hash(request.PasswordHash)
+        new_user = User(
+            Username=request.Username,
+            PasswordHash=hashed_password,
+            Email=request.Email or None,
+            FullName=request.FullName or None,
+            DeviceID=request.DeviceID,
+            Status=request.Status or "active",
+            IsEmailConfirmed=False,
         )
-        db.add(db_user)
+        db.add(new_user)
         db.commit()
-        db.refresh(db_user)
-        return db_user
-    except HTTPException:
-        raise
+        db.refresh(new_user)
+
+        # Generate tokens
+        access_token = create_access_token(data={"sub": new_user.UserID})
+        refresh_token = create_refresh_token(data={"sub": new_user.UserID})
+
+        # Save session
+        session = UserSession(
+            UserID=new_user.UserID,
+            AccessToken=access_token,
+            RefreshToken=refresh_token,
+            DeviceInfo=request.DeviceID,
+            IpAddress=req.client.host if req.client else None,
+            UserAgent=req.headers.get("user-agent"),
+            ExpiresAt=datetime.utcnow() + timedelta(days=30),
+            Status=SessionStatus.ACTIVE.value,
+        )
+        db.add(session)
+        db.commit()
+
+        return {
+            "status": 201,
+            "message": "Đăng ký thành công",
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "token_type": "bearer",
+            "user": {
+                "user_id": new_user.UserID,
+                "username": new_user.Username,
+                "email": new_user.Email,
+                "full_name": new_user.FullName,
+                "avatar_url": new_user.AvatarURL,
+            },
+        }
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error creating user: {str(e)}")
+        return {"status": 500, "message": f"Lỗi tạo tài khoản: {str(e)}"}
 
 
 @router.get("/device/{device_id}", response_model=UserResponse)
@@ -122,7 +172,8 @@ async def update_user(user_id: int, user_update: UserUpdate, db: Session = Depen
         if user_update.AvatarURL is not None:
             user.AvatarURL = user_update.AvatarURL
         if user_update.PasswordHash is not None:
-            user.PasswordHash = user_update.PasswordHash
+            hashed_password = get_password_hash(user_update.PasswordHash)
+            user.PasswordHash = hashed_password
         if user_update.Status is not None:
             user.Status = user_update.Status
         

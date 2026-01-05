@@ -20,6 +20,15 @@ class RegisterRequest(BaseModel):
     full_name: Optional[str] = Field(None, max_length=100, description="Full name")
     device_id: Optional[str] = Field(None, description="Device ID")
 
+class RegisterRequest1(BaseModel):
+    """Schema for register request aligned with client payload"""
+    Username: str = Field(..., min_length=3, max_length=100, description="Username")
+    PasswordHash: str = Field(..., min_length=6, description="Plain password to hash")
+    ConfirmPassword: str = Field(..., min_length=6, description="Password confirmation")
+    FullName: Optional[str] = Field("", max_length=100, description="Full name")
+    Email: Optional[str] = Field("", description="Email address (can be empty)")
+    Status: Optional[str] = Field("active", description="User status")
+    DeviceID: Optional[str] = Field(None, description="Device ID")
 
 class TokenResponse(BaseModel):
     """Schema for token response"""
